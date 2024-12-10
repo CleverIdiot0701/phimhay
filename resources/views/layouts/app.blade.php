@@ -13,6 +13,8 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="//cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css">
 
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
@@ -77,7 +79,7 @@
             </div>
         </nav>
         <main class="py-4">
-            @if (Auth::user()->id)
+            @if (Auth::user() && Auth::user()->id )
                 <div class="container">
                     @include('layouts.navbar')
                 </div>
@@ -87,11 +89,14 @@
     </div>
     <!-- jQuery CDN -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-s1aT3dGAzCXC6on9cJ+reM2H5YPmtCjs7Tf6q5gBrzpr1vjtbmxSiv5epMy76RPg" crossorigin="anonymous">
     </script>
+    <script src="//cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
     <script type="text/javascript">
+        let table = new DataTable('#tablephim');
         function ChangeToSlug() {
 
             var slug;
@@ -123,6 +128,30 @@
             //In slug ra textbox có id “slug”
             document.getElementById('convert_slug').value = slug;
         }
+    </script>
+    <script type="text/javascript">
+        $('.order_position').sortable({
+
+            placeholder : 'ui-state-highlight',
+            update: function(event,ui){
+                let array_id = [];
+                $('.order_position tr').each(function(){
+                    array_id.push($(this).attr('id'));
+                })
+                $.ajax({
+                    headers:{
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url:"{{route('resorting')}}",
+                    method:"POST",
+                    data:{array_id:array_id},
+                    success:function(data){
+                        alert('Sắp xếp thành công!!!');
+                    }
+                })
+            }
+
+        })
     </script>
 </body>
 

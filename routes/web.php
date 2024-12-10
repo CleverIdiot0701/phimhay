@@ -38,6 +38,8 @@ Auth::routes();
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 // route admin
 
+Route::post('resorting',  [CategoryController::class, 'resorting'])->name('resorting');
+
 Route::resource('/category', CategoryController::class );
 Route::resource('/genre', GenreController::class );
 Route::resource('/country', CountryController::class);
