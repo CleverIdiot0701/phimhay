@@ -9,6 +9,7 @@
     <meta content="VN" name="geo.region" />
     <meta name="DC.language" scheme="utf-8" content="vi" />
     <meta name="language" content="Việt Nam">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
 
     <link rel="shortcut icon"
@@ -123,7 +124,8 @@
                                     aria-haspopup="true">Thể Loại <span class="caret"></span></a>
                                 <ul role="menu" class=" dropdown-menu">
                                     @foreach ($genre as $key => $gen)
-                                        <li><a title="{{$gen->title}}" href="{{ route('genre', $gen->slug) }}">{{$gen->title}}</a></li>
+                                        <li><a title="{{ $gen->title }}"
+                                                href="{{ route('genre', $gen->slug) }}">{{ $gen->title }}</a></li>
                                     @endforeach
                                 </ul>
                             </li>
@@ -132,16 +134,31 @@
                                     aria-haspopup="true">Quốc Gia <span class="caret"></span></a>
                                 <ul role="menu" class=" dropdown-menu">
                                     @foreach ($country as $key => $count)
-                                        <li><a title="{{$count->title}}" href="{{ route('country', $count->slug) }}">{{$count->title}}</a></li>
+                                        <li><a title="{{ $count->title }}"
+                                                href="{{ route('country', $count->slug) }}">{{ $count->title }}</a>
+                                        </li>
                                     @endforeach
                                 </ul>
                             </li>
+                            <li class="mega dropdown">
+                                <a title="Năm phim" href="#" data-toggle="dropdown" class="dropdown-toggle"
+                                    aria-haspopup="true">Năm phim <span class="caret"></span></a>
+                                <ul role="menu" class=" dropdown-menu">
+                                    @for ($year = 2000; $year <= 2024; $year++)
+                                        <li><a title="{{ $year }}"
+                                                href="{{ url('nam/' . $year) }}">{{ $year }}</a>
+                                        </li>
+                                    @endfor
+
+                                </ul>
+                            </li>
                             @foreach ($category as $key => $cate)
-                                <li class="mega"><a title="{{$cate->title}}" href="{{ route('category', $cate->slug) }}">{{$cate->title}}</a>
+                                <li class="mega"><a title="{{ $cate->title }}"
+                                        href="{{ route('category', $cate->slug) }}">{{ $cate->title }}</a>
                                 </li>
                             @endforeach
 
-                            
+
                             {{-- <li><a title="Phim Lẻ" href="danhmuc.php">Phim Lẻ</a></li>
                             <li><a title="Phim Bộ" href="danhmuc.php">Phim Bộ</a></li>
                             <li><a title="Phim Chiếu Rạp" href="danhmuc.php">Phim Chiếu Rạp</a></li> --}}
@@ -191,7 +208,50 @@
 
     <script type='text/javascript' src='{{ asset('js/halimtheme-core.min.js?ver=1626273138') }}' id='halim-init-js'>
     </script>
+    <script type="text/javascript">
+        $(".watch_trailer").click(function(e){
+            e.preventDefault();
+            var aid = $(this).attr("href");
+            $('html,body').animate({scrollTop: $(aid).offset().top}, 'slow');
+        })
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $.ajax({
+                url: "{{ url('/filter-topview-default') }}",
+                method: "GET",
 
+                success: function(data) {
+                    $('#show_data_default').html(data);
+                }
+            });
+        })
+
+        $('.filter-sidebar').click(function() {
+            var href = $(this).attr('href');
+            if (href == '#ngay') {
+                var value = 0;
+            } else if (href == '#tuan') {
+                var value = 1;
+            } else {
+                var value = 2;
+            }
+            $.ajax({
+                url: "{{ url('/filter-topview-phim') }}",
+                method: "POST",
+                data: {
+                    value: value
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                    $('#halim-ajax-popular-post-default').css("display", "none");
+                    $('#show_data' ).html(data);
+                }
+            });
+        })
+    </script>
 
 
 
@@ -380,6 +440,37 @@
             float: left;
         }
     </style>
+    <script>
+        jQuery(document).ready(function($) {
+            var owl = $('#halim_related_movies-2');
+            owl.owlCarousel({
+                loop: true,
+                margin: 5,
+                autoplay: true,
+                autoplayTimeout: 4000,
+                autoplayHoverPause: true,
+                nav: true,
+                navText: ['<i class="hl-down-open rotate-left"></i>',
+                    '<i class="hl-down-open rotate-right"></i>'
+                ],
+                responsiveClass: true,
+                responsive: {
+                    0: {
+                        items: 2
+                    },
+                    480: {
+                        items: 3
+                    },
+                    600: {
+                        items: 5
+                    },
+                    1000: {
+                        items: 5
+                    }
+                }
+            })
+        });
+    </script>
 </body>
 
 </html>

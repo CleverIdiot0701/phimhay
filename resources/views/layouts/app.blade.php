@@ -79,7 +79,7 @@
             </div>
         </nav>
         <main class="py-4">
-            @if (Auth::user() && Auth::user()->id )
+            @if (Auth::user() && Auth::user()->id)
                 <div class="container">
                     @include('layouts.navbar')
                 </div>
@@ -96,7 +96,77 @@
     </script>
     <script src="//cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
     <script type="text/javascript">
+        $('.select-year').change(function() {
+            var year = $(this).find(':selected').val();
+            var id_phim = $(this).attr('id');
+            var _token = $('meta[name="csrf-token"]').attr('content');
+
+            // alert(year);
+            // alert(id_phim);
+            $.ajax({
+                url: "{{ url('/update-year-phim') }}",
+                method: "POST",
+                data: {
+                    year: year,
+                    id_phim: id_phim, 
+                    _token: _token,
+                },
+                success: function() {
+                    alert('Thay đổi năm phim ' + year + ' thành công');
+                }
+            });
+        })
+    </script>
+    <script type="text/javascript">
+        $('.select-season').change(function() {
+            var season = $(this).find(':selected').val();
+            var id_phim = $(this).attr('id');
+            var _token = $('meta[name="csrf-token"]').attr('content');
+
+            // alert(year);
+            // alert(id_phim);
+            $.ajax({
+                url: "{{ url('/update-season-phim') }}",
+                method: "POST",
+                data: {
+                    season: season,
+                    id_phim: id_phim,
+                    _token: _token,
+                },
+                success: function() {
+                    alert('Thay đổi phim season ' + season + ' thành công');
+                }
+            });
+        })
+    </script>
+    <script type="text/javascript">
+        $('.select-topview').change(function() {
+            var topview = $(this).find(':selected').val();
+            var id_phim = $(this).attr('id');
+
+            if (topview == 0) {
+                var text = 'Ngày';
+            } else if (topview == 1) {
+                var text = 'Tuần';
+            } else {
+                var text = 'Tháng';
+            }
+            $.ajax({
+                url: "{{ url('/update-topview-phim') }}",
+                method: "GET",
+                data: {
+                    topview: topview,
+                    id_phim: id_phim
+                },
+                success: function() {
+                    alert('Thay đổi phim theo topview ' + text + ' thành công');
+                }
+            });
+        })
+    </script>
+    <script type="text/javascript">
         let table = new DataTable('#tablephim');
+
         function ChangeToSlug() {
 
             var slug;
@@ -132,20 +202,22 @@
     <script type="text/javascript">
         $('.order_position').sortable({
 
-            placeholder : 'ui-state-highlight',
-            update: function(event,ui){
+            placeholder: 'ui-state-highlight',
+            update: function(event, ui) {
                 let array_id = [];
-                $('.order_position tr').each(function(){
+                $('.order_position tr').each(function() {
                     array_id.push($(this).attr('id'));
                 })
                 $.ajax({
-                    headers:{
+                    headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    url:"{{route('resorting')}}",
-                    method:"POST",
-                    data:{array_id:array_id},
-                    success:function(data){
+                    url: "{{ route('resorting') }}",
+                    method: "POST",
+                    data: {
+                        array_id: array_id
+                    },
+                    success: function(data) {
                         alert('Sắp xếp thành công!!!');
                     }
                 })
