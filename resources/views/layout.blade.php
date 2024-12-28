@@ -220,9 +220,8 @@
             $.ajax({
                 url: "{{ url('/filter-topview-default') }}",
                 method: "GET",
-
                 success: function(data) {
-                    $('#show_data_default').html(data);
+                    $('#show_data_default').html(data); 
                 }
             });
         })
