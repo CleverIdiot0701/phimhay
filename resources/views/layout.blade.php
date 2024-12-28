@@ -66,16 +66,34 @@
                 <div class="col-md-5 col-sm-6 halim-search-form hidden-xs">
                     <div class="header-nav">
                         <div class="col-xs-12">
-                            <form id="search-form-pc" name="halimForm" role="search" action="" method="GET">
-                                <div class="form-group">
-                                    <div class="input-group col-xs-12">
-                                        <input id="search" type="text" name="s" class="form-control"
-                                            placeholder="Tìm kiếm..." autocomplete="off" required>
-                                        <i class="animate-spin hl-spin4 hidden"></i>
-                                    </div>
+                            <style type="text/css">
+                                ul#result {
+                                    position: absolute;
+                                    z-index: 9999;
+                                    background: #1b2d3c;
+                                    width: 94%;
+                                    padding: 12px;
+                                    margin: 1px;
+                                    overflow-y: auto;
+                                    max-height: 300px;
+                                    border-radius: 5px;
+                                    border: 1px solid #1b2d3c;
+                                }
+                            </style>
+
+                            <div class="form-group form-timkiem">
+                                <div class="input-group col-xs-12">
+                                    <form action="{{route('search')}}" method="GET">
+
+                                        <input id="timkiem" type="text" name="search" class="form-control"
+                                        placeholder="Tìm kiếm..." autocomplete="off">
+                                        {{-- <i class="animate-spin hl-spin4 hidden"></i> --}}
+                                        <button class="btn btn-primary" >Tìm kiếm</button>
+                                    </form>
                                 </div>
-                            </form>
-                            <ul class="ui-autocomplete ajax-results hidden"></ul>
+                            </div>
+
+                            <ul class="list-group" id="result" style="display: none"  {{--ui-autocomplete ajax-results hidden" --}}></ul>
                         </div>
                     </div>
                 </div>
@@ -209,19 +227,56 @@
     <script type='text/javascript' src='{{ asset('js/halimtheme-core.min.js?ver=1626273138') }}' id='halim-init-js'>
     </script>
     <script type="text/javascript">
-        $(".watch_trailer").click(function(e){
+        $(".watch_trailer").click(function(e) {
             e.preventDefault();
             var aid = $(this).attr("href");
-            $('html,body').animate({scrollTop: $(aid).offset().top}, 'slow');
+            $('html,body').animate({
+                scrollTop: $(aid).offset().top
+            }, 'slow');
         })
     </script>
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v21.0">
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+                    $('#timkiem').keyup(function() {
+                        $('#result').html('');
+                        var search = $('#timkiem').val();
+                        if (search != '') {
+                            $('#result').css('display', 'inherit')
+                            var expression = new RegExp(search, "i");
+                            $.getJSON('/json/movies.json', function(data) {
+                                $.each(data, function(key, value) {
+                                    if (value.title.search(expression) != -1) {
+                                        $('#result').append(
+                                            '<li style="cursor:pointer " class="list-group-item link-class"><img height="40" width="40"  src="/uploads/movie/'+value.image+'"/>  '+value.title+'<br> |  <span class="text-muted">'+value.description+'</li>');
+                                    }
+                                });
+                            });
+                        } 
+                        else {
+                            $('result').css('display', 'none');
+                        }
+                    });
+                    $('#result').on('click', 'li', function() {
+                        var click_text = $(this).text().split('|');
+                        $('#timkiem').val($.trim(click_text[0]));
+                        $('#result').html('');
+                        $('#result').css('display', 'none')
+                    });
+                });
+                    
+    </script>
+
     <script type="text/javascript">
         $(document).ready(function() {
             $.ajax({
                 url: "{{ url('/filter-topview-default') }}",
                 method: "GET",
                 success: function(data) {
-                    $('#show_data_default').html(data); 
+                    $('#show_data_default').html(data);
                 }
             });
         })
@@ -246,7 +301,7 @@
                 },
                 success: function(data) {
                     $('#halim-ajax-popular-post-default').css("display", "none");
-                    $('#show_data' ).html(data);
+                    $('#show_data').html(data);
                 }
             });
         })

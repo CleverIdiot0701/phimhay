@@ -57,3 +57,4 @@ Route::post('/filter-topview-phim',  [MovieController::class, 'filter_topview'])
 Route::post('/update-season-phim',  [MovieController::class, 'update_season']);
 
 Route::get('/filter-topview-default',  [MovieController::class, 'filter_defalut']);
+Route::get('/search',  [IndexController::class, 'search'])->name('search');

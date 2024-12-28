@@ -36,7 +36,7 @@
                                 <td>{{ $cate->tags }}</td>
                                 <td>{{ $cate->thoiluong }}</td>
                                 <td>{{ $cate->name_eng }}</td>
-                                <td><img width="85px" src="{{ asset('/uploads/movie/' . $cate->image) }}"
+                                <td><img width="50px" src="{{ asset('/uploads/movie/' . $cate->image) }}"
                                         alt="Loading...">
                                 </td>
                                 <td>
@@ -91,7 +91,12 @@
                                     @endif
                                 </td>
                                 <td>{{ $cate->category->title }}</td>
-                                <td>{{ $cate->genre->title }}</td>
+                               
+                                <td >
+                                @foreach($cate->movie_genre as  $gen)
+                                <span class="badge bg-dark">{{ $gen->title }}</span>
+                                @endforeach
+                                </td>
                                 <td>{{ $cate->country->title }}</td>
                                 <td>
                                     <form method="POST">

@@ -7,9 +7,11 @@ use App\Models\Movie;
 use App\Models\Category;
 use App\Models\Country;
 use App\Models\Genre;
-use Faker\Core\File;
+// use Faker\Core\File;
 use Carbon\Carbon;
 use PhpParser\Node\Stmt\Break_;
+use Illuminate\Support\Facades\File;
+use PhpParser\Node\Stmt\Foreach_;
 
 class MovieController extends Controller
 {
@@ -21,7 +23,14 @@ class MovieController extends Controller
      */
     public function index()
     {
-        $list = Movie::with('category', 'country', 'genre')->orderBy('id', 'DESC')->get();
+        $list = Movie::with('category', 'movie_genre', 'genre')->orderBy('id', 'DESC')->get();
+        
+
+        $path = public_path() . "/json";
+        if (!is_dir($path)) {
+            mkdir($path, 0777, true);
+        }
+        File::put($path . '/movies.json', json_encode($list));
         return view('admin.movie.index', compact('list'));
     }
 
@@ -133,8 +142,9 @@ class MovieController extends Controller
     {
         $category = Category::pluck('title', 'id');
         $genre = Genre::pluck('title', 'id');
+        $list_genre = Genre::all();
         $country = Country::pluck('title', 'id');
-        return view('admin.movie.form', compact('country', 'genre', 'category',));
+        return view('admin.movie.form', compact('country', 'genre', 'category', 'list_genre'));
     }
 
     /**
@@ -159,12 +169,15 @@ class MovieController extends Controller
         $movie->description = $data['description'];
         $movie->status = $data['status'];
         $movie->category_id = $data['category_id'];
-        $movie->genre_id = $data['genre_id'];
         $movie->country_id = $data['country_id'];
         $movie->created_at = Carbon::now('Asia/Ho_Chi_Minh');
         $movie->updated_at = Carbon::now('Asia/Ho_Chi_Minh');
         // them hinh anh
-
+        foreach($data['genre'] as $key => $gen){
+            $movie->genre_id = $gen[0];
+        }
+        
+        // $movie->genre_id = $data['genre_id'];
         $get_image = $request->file('image');
 
 
@@ -176,6 +189,10 @@ class MovieController extends Controller
             $movie->image = $new_image;
         }
         $movie->save();
+        // them nhieu the loai cho phim
+        $movie->Movie_Genre()->attach($data['genre']);
+
+
         return redirect()->back();
     }
 
@@ -201,8 +218,9 @@ class MovieController extends Controller
         $movie = Movie::find($id);
         $category = Category::pluck('title', 'id');
         $genre = Genre::pluck('title', 'id');
+        $list_genre = Genre::all();
         $country = Country::pluck('title', 'id');
-        return view('admin.movie.form', compact('country', 'genre', 'category', 'movie'));
+        return view('admin.movie.form', compact('country', 'genre', 'category', 'movie', 'list_genre'));
     }
 
     /**
@@ -228,10 +246,12 @@ class MovieController extends Controller
         $movie->description = $data['description'];
         $movie->status = $data['status'];
         $movie->category_id = $data['category_id'];
-        $movie->genre_id = $data['genre_id'];
         $movie->country_id = $data['country_id'];
         $movie->updated_at = Carbon::now('Asia/Ho_Chi_Minh');
 
+        foreach($data['genre'] as $key => $gen){
+            $movie->genre_id = $gen[0];
+        }
         // them hinh anh
 
         $get_image = $request->file('image');
@@ -249,6 +269,7 @@ class MovieController extends Controller
             }
         }
         $movie->save();
+        $movie->movie_genre()->sync($data['genre']);
         return redirect()->back();
     }
 
