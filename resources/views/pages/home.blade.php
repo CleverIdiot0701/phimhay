@@ -117,10 +117,10 @@
 
         </div>
         <main id="main-contents" class="col-xs-12 col-sm-12 col-md-8">
-            @foreach ($category_home as $key => $cate_home)
+            @foreach ($category as $key => $cate_home)
                 <section id="halim-advanced-widget-2">
                     <div class="section-heading">
-                        <a href="danhmuc.php" title="Phim Bộ">
+                        <a href="{{ route('category', $cate_home->slug)}}" title="{{ $cate_home->title }}">
                             <span class="h-text">{{ $cate_home->title }}</span>
                         </a>
                     </div>
@@ -128,7 +128,7 @@
                         @foreach ($cate_home->movie->take(12) as $key => $mov)
                             <article class="col-md-3 col-sm-3 col-xs-6 thumb grid-item post-37606">
                                 <div class="halim-item">
-                                    <a class="halim-thumb" href="{{ route('movie', $hot->slug) }}">
+                                    <a class="halim-thumb" href="{{ route('movie', $mov->slug) }}">
                                         <figure><img class="lazy img-responsive"
                                                 src="{{ asset('uploads/movie/' . $mov->image) }}"
                                                 alt="{{ $mov->title }}" title="{{ $mov->title }}">
@@ -162,7 +162,7 @@
                                                 @default
                                             @endswitch
                                         </span>
-                                        @if($mov->resolution!=5){
+                                        @if($mov->resolution!=5)
 
                                             <span class="episode"><i class="fa fa-play" aria-hidden="true"></i>
                                                 <td>
@@ -176,11 +176,11 @@
                                                     @endif
                                                 </td>
                                             </span>
-                                        }@endif
+                                        @endif
                                         <div class="icon_overlay"></div>
                                         <div class="halim-post-title-box">
                                             <div class="halim-post-title ">
-                                                <p class="entry-title">{{ $mov->title }}</p>
+                                                <p class="entry-title">{{ $mov->title }} </p>
                                                 <p class="original_title">{{ $mov->name_eng }}</p>
                                             </div>
                                         </div>

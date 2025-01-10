@@ -31,6 +31,10 @@
                             {!! Form::textarea('description',  isset($category)? $category->description: '' , ['style'=>'resize:none','class'=>'form-control', 'placeholder'=>'Nhập dữ liệu...', 'id'=>'title']) !!}
                         </div>
                         <div class="form-group">
+                            {!! Form::label('position', 'Position', []) !!}
+                            {!! Form::number('position',  isset($category)? $category->position: '' , ['style'=>'resize:none','class'=>'form-control', 'placeholder'=>'Nhập dữ liệu...', 'id'=>'position', 'min'=>'1']) !!}
+                        </div>
+                        <div class="form-group">
                             {!! Form::label('Active', 'Active', []) !!}
                             {!! Form::select('status', ['1'=>'Hiển thị', '0'=>'Không'],isset($category)? $category->status: '' , ['class'=>'form-control mb-2 d-block']) !!}
                         </div>

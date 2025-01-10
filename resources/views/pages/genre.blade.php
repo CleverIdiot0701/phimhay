@@ -57,19 +57,20 @@
                                         @endswitch
                                     </span>
                                     @if ($mov->resolution != 5)
-                                        <span class="episode"><i class="fa fa-play" aria-hidden="true"></i>
-                                            <td>
-                                                @if ($mov->phude == 0)
-                                                    Phụ đề
-                                                @else
-                                                    Thuyết minh
-                                                @endif
-                                                @if ($mov->season != 0)
-                                                    - SS{{ $mov->season }}
-                                                @endif
-                                            </td>
+                                        <span class="episode">
+                                            <i class="fa fa-play" aria-hidden="true"></i>
+                                            
+                                            @if ($mov->phude == 0)
+                                                Phụ đề - Tập 1/{{ $mov->sotap }}
+                                            @else
+                                                Thuyết minh - Tập 1/{{ $mov->sotap }}
+                                            @endif
+                                            {{-- @if ($mov->season != 0)
+                                                - SS{{ $mov->season }}
+                                            @endif --}}
                                         </span>
                                     @endif
+
                                     <div class="icon_overlay"></div>
                                     <div class="halim-post-title-box">
                                         <div class="halim-post-title ">

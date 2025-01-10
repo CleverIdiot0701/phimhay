@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Movie;
 use App\Models\Category;
 use App\Models\Country;
+use App\Models\Episode;
 use App\Models\Genre;
+use App\Models\Movie_Genre;
 // use Faker\Core\File;
 use Carbon\Carbon;
 use PhpParser\Node\Stmt\Break_;
@@ -23,7 +25,7 @@ class MovieController extends Controller
      */
     public function index()
     {
-        $list = Movie::with('category', 'movie_genre', 'genre')->orderBy('id', 'DESC')->get();
+        $list = Movie::with('category', 'movie_genre', 'genre', 'country')->orderBy('id', 'DESC')->get();
         
 
         $path = public_path() . "/json";
@@ -161,6 +163,7 @@ class MovieController extends Controller
         $movie->tags = $data['tags'];
         $movie->thoiluong = $data['thoiluong'];
         $movie->trailer = $data['trailer'];
+        $movie->sotap = $data['sotap'];
         $movie->phude = $data['phude'];
         $movie->resolution = $data['resolution'];
         $movie->name_eng = $data['name_eng'];
@@ -193,7 +196,8 @@ class MovieController extends Controller
         $movie->Movie_Genre()->attach($data['genre']);
 
 
-        return redirect()->back();
+        return redirect()->route('movie.index');
+
     }
 
     /**
@@ -216,11 +220,14 @@ class MovieController extends Controller
     public function edit($id)
     {
         $movie = Movie::find($id);
+        $movie_genre = $movie->movie_genre;
         $category = Category::pluck('title', 'id');
         $genre = Genre::pluck('title', 'id');
         $list_genre = Genre::all();
         $country = Country::pluck('title', 'id');
-        return view('admin.movie.form', compact('country', 'genre', 'category', 'movie', 'list_genre'));
+
+        return view('admin.movie.form', compact('country', 'genre', 'category', 'movie', 'list_genre', 'movie_genre'));
+
     }
 
     /**
@@ -238,6 +245,7 @@ class MovieController extends Controller
         $movie->tags = $data['tags'];
         $movie->thoiluong = $data['thoiluong'];
         $movie->trailer = $data['trailer'];
+        $movie->sotap = $data['sotap'];
         $movie->phude = $data['phude'];
         $movie->resolution = $data['resolution'];
         $movie->name_eng = $data['name_eng'];
@@ -270,7 +278,7 @@ class MovieController extends Controller
         }
         $movie->save();
         $movie->movie_genre()->sync($data['genre']);
-        return redirect()->back();
+        return redirect()->route('movie.index');
     }
 
     /**
@@ -283,9 +291,15 @@ class MovieController extends Controller
     {
 
         $movie = Movie::find($id);
+        // xoa anh
         if (file_exists('uploads/movie/' . $movie->image)) {
             unlink('uploads/movie/' . $movie->image);
         }
+
+        // xoa the loai
+        Movie_Genre::whereIn('movie_id', [$movie->id])->delete();      
+        // xoa tap phim  
+        Episode::whereIn('movie_id', [$movie->id])->delete();        
         $movie->delete();
         return redirect()->back();
     }

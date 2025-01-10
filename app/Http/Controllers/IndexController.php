@@ -10,6 +10,7 @@ use App\Models\Movie;
 use App\Models\Episode;
 use Nette\Utils\Random;
 use PHPUnit\Framework\Constraint\Count;
+use App\Models\Movie_Genre;
 use Illuminate\Support\Facades\DB;
 
 class IndexController extends Controller
@@ -40,10 +41,10 @@ class IndexController extends Controller
         $phimhot = Movie::where('phim_hot', 1)->where('status', 1)->orderBy('updated_at', 'DESC')->get();
         $phimhot_sidebar = Movie::where('phim_hot', 1)->where('status', 1)->orderBy('updated_at', 'DESC')->take('20')->get();
         $phim_trailer = Movie::where('resolution', 5)->where('status', 1)->orderBy('updated_at', 'DESC')->take('10')->get();
-        $category = Category::orderby('id', 'DESC')->where('status', 1)->get();
+        $category = Category::orderby('position', 'ASC')->where('status', 1)->get();
         $genre = Genre::orderby('id', 'DESC')->get();
         $country = Country::orderby('id', 'DESC')->get();
-        $category_home = Category::with('movie')->orderby('id', 'DESC')->where('status', 1)->get();
+        $category_home = Category::with('movie')->orderby('position', 'ASC')->where('status', 1)->get();
         return view('pages.home', compact('category', 'genre', 'country', 'category_home', 'phimhot', 'phimhot_sidebar', 'phim_trailer'));
     }
     public function category($slug)
@@ -56,6 +57,7 @@ class IndexController extends Controller
         $phimhot_sidebar = Movie::where('phim_hot', 1)->where('status', 1)->orderBy('updated_at', 'DESC')->take('20')->get();
         $phim_trailer = Movie::where('resolution', 5)->where('status', 1)->orderBy('updated_at', 'DESC')->take('10')->get();
 
+       
 
 
         $movie = Movie::where('category_id', $cate_slug->id)->orderBy('updated_at', 'DESC')->paginate(40);
@@ -98,9 +100,14 @@ class IndexController extends Controller
         $phim_trailer = Movie::where('resolution', 5)->where('status', 1)->orderBy('updated_at', 'DESC')->take('10')->get();
         $phimhot_sidebar = Movie::where('phim_hot', 1)->where('status', 1)->orderBy('updated_at', 'DESC')->take('20')->get();
 
-
         $genre_slug = Genre::where('slug', $slug)->first();
-        $movie = Movie::where('genre_id', $genre_slug->id)->orderBy('updated_at', 'DESC')->paginate(40);
+        // Nhieu the loai
+        $movie_genre = Movie_Genre::where('genre_id', $genre_slug->id)->get();
+        $many_genre = [];
+        foreach ($movie_genre as $key => $mov) {
+            $many_genre[] = $mov->movie_id;
+        }
+        $movie = Movie::whereIn('id', $many_genre)->orderBy('updated_at', 'DESC')->paginate(40);
 
         return view('pages.genre', compact('category', 'genre', 'country', 'genre_slug', 'movie', 'phimhot_sidebar', 'phim_trailer'));
     }
@@ -123,7 +130,7 @@ class IndexController extends Controller
         $category = Category::orderby('id', 'DESC')->where('status', 1)->get();
         $genre = Genre::orderby('id', 'DESC')->get();
         $country = Country::orderby('id', 'DESC')->get();
-        $movie = Movie::with('country', 'category', 'genre')->where('slug', $slug)->where('status', 1)->first();
+        $movie = Movie::with('country', 'category', 'genre', 'movie_genre')->where('slug', $slug)->where('status', 1)->first();
         $phimhot_sidebar = Movie::where('phim_hot', 1)->where('status', 1)->orderBy('updated_at', 'DESC')->take('20')->get();
 
         $phim_trailer = Movie::where('resolution', 5)->where('status', 1)->orderBy('updated_at', 'DESC')->take('10')->get();
@@ -134,12 +141,18 @@ class IndexController extends Controller
         )->get();
         return view('pages.movie', compact('category', 'genre', 'country', 'movie', 'related', 'phimhot_sidebar', 'phim_trailer'));
     }
-    public function watch()
+    public function watch($slug)
     {
         $category = Category::orderby('id', 'DESC')->where('status', 1)->get();
         $genre = Genre::orderby('id', 'DESC')->get();
         $country = Country::orderby('id', 'DESC')->get();
-        return view('pages.watch', compact('category', 'genre', 'country'));
+
+        $phimhot_sidebar = Movie::where('phim_hot', 1)->where('status', 1)->orderBy('updated_at', 'DESC')->take('20')->get();
+        $phim_trailer = Movie::where('resolution', 5)->where('status', 1)->orderBy('updated_at', 'DESC')->take('10')->get();
+
+        $movie = Movie::with('country', 'category', 'genre', 'movie_genre', 'episode')->where('slug', $slug)->where('status', 1)->first();
+
+        return view('pages.watch', compact('category', 'genre', 'country', 'movie', 'phimhot_sidebar', 'phim_trailer'));
     }
     public function episode()
     {

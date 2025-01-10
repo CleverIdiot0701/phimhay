@@ -24,7 +24,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        $list = Category::orderBy('position', 'ASC')->get();
+        $list = Category::orderBy('position', 'DESC')->get();
         return view('admin.category.form', compact('list'));
     }
 
@@ -42,6 +42,7 @@ class CategoryController extends Controller
         $category->description = $data['description'];
         $category->status = $data['status'];
         $category->slug = $data['slug'];
+        $category->position = $data['position'] ;
         $category->save();
         return redirect()->back();
     }
@@ -85,6 +86,8 @@ class CategoryController extends Controller
         $category->description = $data['description'];
         $category->status = $data['status'];
         $category->slug = $data['slug'];
+        $category->position = $data['position'];
+
         $category->save();
         return redirect()->back();
     }

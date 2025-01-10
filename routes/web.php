@@ -30,15 +30,14 @@ Route::get('/the-loai/{slug}',[IndexController::class, 'genre'])->name('genre');
 Route::get('/quoc-gia/{slug}',[IndexController::class, 'country'])->name('country');
 
 Route::get('/phim/{slug}',[IndexController::class, 'movie'])->name('movie');
-Route::get('/xem-phim',[IndexController::class, 'watch'])->name('watch');
-Route::get('/episode',[IndexController::class, 'episode'])->name('episode');
+Route::get('/xem-phim/{slug}',[IndexController::class, 'watch'])->name('watch');
+Route::get('/so-tap',[IndexController::class, 'episode'])->name('so-tap');
 Route::get('/nam/{year}',  [IndexController::class, 'year']);
 Route::get('/tag/{tag}',  [IndexController::class, 'tag']);
 
 
 
 
-Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 // route admin
@@ -48,7 +47,13 @@ Route::post('resorting',  [CategoryController::class, 'resorting'])->name('resor
 Route::resource('/category', CategoryController::class );
 Route::resource('/genre', GenreController::class );
 Route::resource('/country', CountryController::class);
+// Them tap phim
 Route::resource('/episode', EpisodeController::class);
+Route::post('/select-movie', [EpisodeController::class, 'select_movie']);
+
+
+
+
 Route::resource('/movie', MovieController::class);
 
 Route::post('/update-year-phim',  [MovieController::class, 'update_year']);
@@ -58,3 +63,7 @@ Route::post('/update-season-phim',  [MovieController::class, 'update_season']);
 
 Route::get('/filter-topview-default',  [MovieController::class, 'filter_defalut']);
 Route::get('/search',  [IndexController::class, 'search'])->name('search');
+
+
+
+Auth::routes();

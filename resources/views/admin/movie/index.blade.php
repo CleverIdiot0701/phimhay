@@ -19,10 +19,11 @@
                             <th scope="col">Phụ đề</th>
                             {{-- <th scope="col">Description</th> --}}
                             <th scope="col">Active/Inactive</th>
-                            <th scope="col">Category</th>
-                            <th scope="col">Genre</th>
-                            <th scope="col">Country</th>
-                            <th scope="col">Năm phim</th>
+                            <th scope="col">Danh Mục</th>
+                            <th scope="col">Thể Loại</th>
+                            <th scope="col">Quốc Gia</th>
+                            <th scope="col">Số Tập Phim</th>
+                            <th scope="col">Năm Phim</th>
                             <th scope="col">Season</th>
                             <th scope="col">Top views</th>
                             <th scope="col">Manage</th>
@@ -98,6 +99,7 @@
                                 @endforeach
                                 </td>
                                 <td>{{ $cate->country->title }}</td>
+                                <td>{{ $cate->sotap }}</td>
                                 <td>
                                     <form method="POST">
                                         @csrf

@@ -6,12 +6,19 @@
                 <div class="panel-heading">
                     <div class="row">
                         <div class="col-xs-6">
-                            <div class="yoast_breadcrumb hidden-xs"><span><span><a
-                                            href="{{ route('category', [$movie->category->slug]) }}">{{ $movie->category->title }}</a>
-                                        » <span><a
-                                                href="{{ route('category', [$movie->country->slug]) }}">{{ $movie->country->title }}</a>
-                                            » <span class="breadcrumb_last"
-                                                aria-current="page">{{ $movie->title }}</span></span></span></span></div>
+                            <div class="yoast_breadcrumb hidden-xs"><span><span>
+                                <a href="{{ route('category', [$movie->category->slug]) }}">{{ $movie->category->title }}</a> » 
+                                <span>
+                                <a href="{{ route('country', [$movie->country->slug]) }}">{{ $movie->country->title }}</a> » 
+                                @foreach ($movie->movie_genre as $gen)
+                                    
+                                <a href="{{ route('genre', [$gen->slug]) }}">{{ $gen->title }}</a> » 
+                                @endforeach
+
+                                <span class="breadcrumb_last" aria-current="page">{{ $movie->title }}</span>
+                            </span>
+                        </span></span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -35,16 +42,17 @@
                             <div class="movie_info col-xs-12">
                                 <div class="movie-poster col-md-3">
                                     <img class="movie-thumb" src="{{ asset('uploads/movie/' . $movie->image) }}"
-                                        alt="{{$movie->title}}">
-                                        @if($movie->resolution!=5)
-                                    <div class="bwa-content">
-                                        <div class="loader"></div>
-                                        <a href="{{ route('watch') }}" class="bwac-btn">
-                                            <i class="fa fa-play"></i>
-                                        </a>
-                                    </div>
+                                        alt="{{ $movie->title }}">
+                                    @if ($movie->resolution != 5)
+                                        <div class="bwa-content">
+                                            <div class="loader"></div>
+                                            <a href="{{ route('watch',[$movie->slug]) }}" class="bwac-btn">
+                                                <i class="fa fa-play"></i>
+                                            </a>
+                                        </div>
                                     @else
-                                    <a href="#wacth_trailer" style="display: block" class="btn btn-primary watch_trailer">Xem Trailer</a>
+                                        <a href="#wacth_trailer" style="display: block"
+                                            class="btn btn-primary watch_trailer">Xem Trailer</a>
                                     @endif
                                 </div>
                                 <div class="film-poster col-md-9">
@@ -83,8 +91,7 @@
                                                 @endswitch
 
                                             </span>
-                                            @if($movie->resolution!=5)
-
+                                            @if ($movie->resolution != 5)
                                                 <span class="episode">
                                                     <td>
                                                         @if ($movie->phude == 0)
@@ -98,21 +105,24 @@
                                                     </td>
                                                 </span>
                                             @endif
-                                           
+
                                         </li>
                                         <li class="list-info-group-item"><span>Điểm IMDb</span> : <span
                                                 class="imdb">7.2</span></li>
-                                        <li class="list-info-group-item"><span>Thời lượng</span> : {{ $movie->thoiluong }}
+                                        <li class="list-info-group-item"><span>Tập Pim</span> : {{ $movie->sotap }} / {{$movie->sotap}}
                                         </li>
-                                        <li class="list-info-group-item"><span>Thể loại</span> :
-                                            <a href="{{ route('genre', $movie->genre->slug) }}"
-                                                rel="category">{{ $movie->genre->title }}
+                                        <li class="list-info-group-item"><span>Thời Lượng</span> : {{ $movie->thoiluong }}
+                                        </li>
+                                        <li class="list-info-group-item"><span>Thể Loại</span> :
+                                            @foreach ($movie->movie_genre as $gen)
+                                            <a href="{{ route('genre', $gen->slug) }}" rel="category">{{$gen->title}} |</a>
+                                            @endforeach
                                         </li>
                                         <li class="list-info-group-item"><span>Danh Mục Phim</span> :
                                             <a href="{{ route('category', $movie->category->slug) }}"
-                                                rel="tag">{{ $movie->category->title }}
+                                                rel="tag">{{ $movie->category->title }}</a>
                                         </li>
-                                        <li class="list-info-group-item"><span>Quốc gia</span> :
+                                        <li class="list-info-group-item"><span>Quốc Gia</span> :
                                             <a href="{{ route('country', $movie->country->slug) }}"
                                                 rel="tag">{{ $movie->country->title }}</a>
                                         </li>
@@ -157,7 +167,7 @@
                                 </article>
                             </div>
                         </div>
-                         
+
                         {{-- Trailer phim --}}
                         <div class="section-bar clearfix">
                             <h2 class="section-title"><span style="color:#ffed4d">Trailer Phim</span></h2>
@@ -183,11 +193,12 @@
                             @endphp
                             <div class="video-item halim-entry-box">
                                 <article id="wacth_trailer" class="item-content">
-                                    <div class="fb-comments" data-href="{{$current_url}}" data-width="100%" data-numposts="10"></div>
+                                    <div class="fb-comments" data-href="{{ $current_url }}" data-width="100%"
+                                        data-numposts="10"></div>
                                 </article>
                             </div>
                         </div>
-                        
+
                     </div>
                 </section>
                 <section class="related-movies">
@@ -236,28 +247,28 @@
                                                 @endswitch
 
                                             </span>
-                                            @if($relate->resolution!=5)
+                                            @if ($relate->resolution != 5)
                                                 <span class="episode"><i class="fa fa-play" aria-hidden="true"></i>
-                                                    
+
                                                     <td>
                                                         @if ($relate->phude == 0)
-                                                        Phụ đề
+                                                            Phụ đề
                                                         @else
-                                                        Thuyết minh
+                                                            Thuyết minh
                                                         @endif
                                                         @if ($relate->season != 0)
-                                                        - SS{{ $relate->season }}
+                                                            - SS{{ $relate->season }}
                                                         @endif
                                                     </td>
                                                 </span>
                                             @endif
-                                                <div class="icon_overlay"></div>
-                                                <div class="halim-post-title-box">
-                                                    <div class="halim-post-title ">
-                                                        <p class="entry-title">{{ $relate->title }}</p>
-                                                        <p class="original_title">{{ $relate->name_eng }}</p>
-                                                    </div>
+                                            <div class="icon_overlay"></div>
+                                            <div class="halim-post-title-box">
+                                                <div class="halim-post-title ">
+                                                    <p class="entry-title">{{ $relate->title }}</p>
+                                                    <p class="original_title">{{ $relate->name_eng }}</p>
                                                 </div>
+                                            </div>
                                         </a>
                                     </div>
                                 </article>

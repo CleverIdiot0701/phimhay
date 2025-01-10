@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Dashboard</title>
+    <title>Quản lý web-phim</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
@@ -24,7 +24,7 @@
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
+                <a class="navbar-brand" href="{{ url('/home') }}">
                     Dashboard
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -68,7 +68,7 @@
                                         {{ __('Logout') }}
                                     </a>
 
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    <form id="logout-form"  action="{{ route('logout') }}" method="POST" class="d-none">
                                         @csrf
                                     </form>
                                 </div>
@@ -82,9 +82,10 @@
             @if (Auth::user() && Auth::user()->id)
                 <div class="container">
                     @include('layouts.navbar')
+                    @yield('content')
                 </div>
-            @endif
-            @yield('content')
+                @endif
+                @yield('login')
         </main>
     </div>
     <!-- jQuery CDN -->
@@ -95,6 +96,7 @@
         integrity="sha384-s1aT3dGAzCXC6on9cJ+reM2H5YPmtCjs7Tf6q5gBrzpr1vjtbmxSiv5epMy76RPg" crossorigin="anonymous">
     </script>
     <script src="//cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
+    
     <script type="text/javascript">
         $('.select-year').change(function() {
             var year = $(this).find(':selected').val();
@@ -139,6 +141,25 @@
             });
         })
     </script>
+    <script type="text/javascript">
+        $('.select-movie').change(function(){
+            var id = $(this).val();
+         
+            $.ajax({
+                    
+                    url: "{{ url('/select-movie') }}",
+                    method: "POST",
+                    data: {
+                        id: id,
+                        _token: "{{ csrf_token() }}" // CSRF token
+                    },
+                    success: function(data) {
+                        $('#episode').html(data);
+                    },
+                })
+        })
+    </script>
+   
     <script type="text/javascript">
         $('.select-topview').change(function() {
             var topview = $(this).find(':selected').val();
