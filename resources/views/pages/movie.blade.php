@@ -46,7 +46,7 @@
                                     @if ($movie->resolution != 5)
                                         <div class="bwa-content">
                                             <div class="loader"></div>
-                                            <a href="{{ route('watch',[$movie->slug]) }}" class="bwac-btn">
+                                            <a href="{{ url('xem-phim/'.$movie->slug.'/tap-' .$episode->episode) }}" class="bwac-btn">
                                                 <i class="fa fa-play"></i>
                                             </a>
                                         </div>
@@ -126,6 +126,7 @@
                                             <a href="{{ route('country', $movie->country->slug) }}"
                                                 rel="tag">{{ $movie->country->title }}</a>
                                         </li>
+                                       
 
                                     </ul>
                                     <div class="movie-trailer hidden"></div>

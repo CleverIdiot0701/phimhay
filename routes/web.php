@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\MovieController;
@@ -30,7 +31,7 @@ Route::get('/the-loai/{slug}',[IndexController::class, 'genre'])->name('genre');
 Route::get('/quoc-gia/{slug}',[IndexController::class, 'country'])->name('country');
 
 Route::get('/phim/{slug}',[IndexController::class, 'movie'])->name('movie');
-Route::get('/xem-phim/{slug}',[IndexController::class, 'watch'])->name('watch');
+Route::get('/xem-phim/{slug}/{tap}',[IndexController::class, 'watch'])->name('watch');
 Route::get('/so-tap',[IndexController::class, 'episode'])->name('so-tap');
 Route::get('/nam/{year}',  [IndexController::class, 'year']);
 Route::get('/tag/{tag}',  [IndexController::class, 'tag']);
