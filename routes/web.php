@@ -10,6 +10,7 @@ use App\Http\Controllers\GenreController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\EpisodeController;
+use App\Http\Controllers\LeechMovieController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -35,6 +36,7 @@ Route::get('/xem-phim/{slug}/{tap}',[IndexController::class, 'watch'])->name('wa
 Route::get('/so-tap',[IndexController::class, 'episode'])->name('so-tap');
 Route::get('/nam/{year}',  [IndexController::class, 'year']);
 Route::get('/tag/{tag}',  [IndexController::class, 'tag']);
+
 
 
 
@@ -68,3 +70,7 @@ Route::get('/search',  [IndexController::class, 'search'])->name('search');
 
 
 Auth::routes();
+
+// route leech movie
+
+Route::get('leech-movie', [LeechMovieController::class, 'leech_movie'])->name('leech-movie');

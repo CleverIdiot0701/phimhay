@@ -139,6 +139,13 @@
                                 'class' => 'form-control ',
                             ]) !!}
                         </div>
+
+                        <div class="form-group">
+                            {!! Form::label('Thuộc phim', 'Thuộc phim', []) !!}
+                            {!! Form::select('thuocphim', ['0' => 'Phim Lẻ', '1' => 'Phim Bộ'], isset($movie) ? $movie->thuocphim : '', [
+                                'class' => 'form-control ',
+                            ]) !!}
+                        </div>
                         <div class="form-group">
                             {!! Form::label('Image', 'Image', []) !!}
                             {!! Form::file('image', ['class' => 'form-control-file mb-2 d-block']) !!}

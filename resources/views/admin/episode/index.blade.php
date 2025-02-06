@@ -5,24 +5,24 @@
         <div class="row justify-content-center">
             <div class="col-md-12 ">
                 
-                <table class="table">
-                    <thead>
+                <table class="table table table-bordered table-hover text-center align-middle" id="tablephim" >
+                    <thead class="table-dark">
                         <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Tên Phim</th>
-                            <th scope="col">Hình Ảnh Phim</th>
-                            <th scope="col">Tập Phim</th>
-                            <th scope="col">Link Phim</th>
-                            <th scope="col">Trạng Thái</th>
-                            <th scope="col">Quản Lý</th>
+                            <th >#</th>
+                            <th >Tên Phim</th>
+                            <th >Hình Ảnh Phim</th>
+                            <th >Tập Phim</th>
+                            <th >Link Phim</th>
+                            <th >Trạng Thái</th>
+                            <th >Quản Lý</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($list_episode as $key => $episode)
                             <tr>
-                                <th scope="row">{{ $key }}</th>
-                                <td>{{ $episode->movie->title }}</td>
-                                <td><img width="100px" src="{{ asset('/uploads/movie/' . $episode->movie->image) }}"
+                                <th >{{ $key }}</th>
+                                <td >{{ $episode->movie->title }}</td>
+                                <td ><img width="100px" src="{{ asset('/uploads/movie/' . $episode->movie->image) }}"
                                         alt="Loading..."></td>
                                 <td>{{ $episode->episode }}</td>
                                 <td>

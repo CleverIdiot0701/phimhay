@@ -29,12 +29,16 @@ class IndexController extends Controller
 
 
 
-            $movie = Movie::where('title','LIKE', '%'.$search.'%')->orderBy('updated_at', 'DESC')->paginate(40);
+            $movie = Movie::where('title', 'LIKE', '%' . $search . '%')->orderBy('updated_at', 'DESC')->paginate(40);
             return view('pages.search', compact('category', 'genre', 'country', 'movie', 'phimhot_sidebar', 'phim_trailer', 'search'));
         } else {
             return redirect()->to('/');
         }
     }
+
+
+
+
 
     public function home()
     {
@@ -45,7 +49,7 @@ class IndexController extends Controller
         $genre = Genre::orderby('id', 'DESC')->get();
         $country = Country::orderby('id', 'DESC')->get();
         $category_home = Category::with('movie')->orderby('position', 'ASC')->where('status', 1)->get();
-        return view('pages.home', compact('category', 'genre', 'country', 'category_home', 'phimhot', 'phimhot_sidebar', 'phim_trailer'));
+        return view('pages.home', compact('category', 'genre', 'country', 'category_home', 'phimhot', 'phimhot_sidebar', 'phim_trailer' ));
     }
     public function category($slug)
     {
@@ -57,7 +61,7 @@ class IndexController extends Controller
         $phimhot_sidebar = Movie::where('phim_hot', 1)->where('status', 1)->orderBy('updated_at', 'DESC')->take('20')->get();
         $phim_trailer = Movie::where('resolution', 5)->where('status', 1)->orderBy('updated_at', 'DESC')->take('10')->get();
 
-       
+
 
 
         $movie = Movie::where('category_id', $cate_slug->id)->orderBy('updated_at', 'DESC')->paginate(40);
@@ -133,6 +137,8 @@ class IndexController extends Controller
         $movie = Movie::with('country', 'category', 'genre', 'movie_genre')->where('slug', $slug)->where('status', 1)->first();
         $phimhot_sidebar = Movie::where('phim_hot', 1)->where('status', 1)->orderBy('updated_at', 'DESC')->take('20')->get();
 
+        // $movies_single =   Movie::where('thuocphim', 0)->get();
+        // $movies_series = Movie::where('thuocphim', 1)->get();
         $phim_trailer = Movie::where('resolution', 5)->where('status', 1)->orderBy('updated_at', 'DESC')->take('10')->get();
         $related = Movie::with('category', 'genre', 'country')->where('category_id', $movie->category->id)->orderby(DB::raw('RAND()'))->where(
             'slug',
@@ -140,12 +146,15 @@ class IndexController extends Controller
             $slug
         )->get();
         $episode = Episode::with('movie')->where('movie_id', $movie->id)->orderBy('episode', 'DESC')->first();
+        //lấy ra số tập đã thêm
+        $episode_current_list =  Episode::with('movie')->where('movie_id', $movie->id)->get();
+        $episode_current_list_count = $episode_current_list->count();
 
-        return view('pages.movie', compact('category', 'genre', 'country', 'movie', 'related', 'phimhot_sidebar', 'phim_trailer','episode'));
+        return view('pages.movie', compact('category','movies_series', 'movies_single', 'genre', 'country', 'movie', 'related', 'phimhot_sidebar', 'phim_trailer', 'episode', 'episode_current_list_count'));
     }
     public function watch($slug, $tap)
     {
-      
+
         $category = Category::orderby('id', 'DESC')->where('status', 1)->get();
         $genre = Genre::orderby('id', 'DESC')->get();
         $country = Country::orderby('id', 'DESC')->get();
@@ -154,15 +163,15 @@ class IndexController extends Controller
         $phim_trailer = Movie::where('resolution', 5)->where('status', 1)->orderBy('updated_at', 'DESC')->take('10')->get();
 
         $movie = Movie::with('country', 'category', 'genre', 'movie_genre', 'episode')->where('slug', $slug)->where('status', 1)->first();
-        if(isset($tap)){
+        if (isset($tap)) {
 
             $tapphim = $tap;
             $tapphim = substr($tap, 4);
             $episode = Episode::where('movie_id', $movie->id)->where('episode', $tapphim)->first();
-        }else{
+        } else {
             $tapphim = 1;
         }
-        return view('pages.watch', compact('category', 'genre', 'country', 'movie', 'phimhot_sidebar', 'phim_trailer', 'episode','tapphim'));
+        return view('pages.watch', compact('category', 'genre', 'country', 'movie', 'phimhot_sidebar', 'phim_trailer', 'episode', 'tapphim'));
     }
     public function episode()
     {

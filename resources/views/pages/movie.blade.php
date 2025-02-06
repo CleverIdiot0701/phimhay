@@ -109,8 +109,17 @@
                                         </li>
                                         <li class="list-info-group-item"><span>Điểm IMDb</span> : <span
                                                 class="imdb">7.2</span></li>
-                                        <li class="list-info-group-item"><span>Tập Pim</span> : {{ $movie->sotap }} / {{$movie->sotap}}
-                                        </li>
+                                                @if ($movie->thuocphim == '1')
+                                                <li class="list-info-group-item"><span>Tập Phim</span> : {{ $episode_current_list_count }} / {{$movie->sotap}} 
+                                                    @if ($episode_current_list_count == $movie->sotap)
+                                                        - Hoàn Thành
+                                                    @endif
+                                                    
+                                                </li>
+                                                @else
+                                                <li class="list-info-group-item"><span>Phim Lẻ</span></li>    
+                                                @endif
+                                        
                                         <li class="list-info-group-item"><span>Thời Lượng</span> : {{ $movie->thoiluong }}
                                         </li>
                                         <li class="list-info-group-item"><span>Thể Loại</span> :
@@ -170,6 +179,7 @@
                         </div>
 
                         {{-- Trailer phim --}}
+                        @if (!empty($movie->trailer))
                         <div class="section-bar clearfix">
                             <h2 class="section-title"><span style="color:#ffed4d">Trailer Phim</span></h2>
                         </div>
@@ -177,13 +187,15 @@
                             <div class="video-item halim-entry-box">
                                 <article id="post-38424" class="item-content">
                                     <iframe width="100%" height="375px"
-                                        src="https://www.youtube.com/embed/{{ $movie->trailer }}"
-                                        title="{{ $movie->title }}" frameborder="0"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                                    src="https://www.youtube.com/embed/{{ $movie->trailer }}"
+                                    title="{{ $movie->title }}" frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                                 </article>
                             </div>
                         </div>
+                        @endif
+                        
                         {{-- Comments Face --}}
                         <div class="section-bar clearfix">
                             <h2 class="section-title"><span style="color:#ffed4d">Bình Luận</span></h2>

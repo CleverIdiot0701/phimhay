@@ -83,17 +83,17 @@
 
                             <div class="form-group form-timkiem">
                                 <div class="input-group col-xs-12">
-                                    <form action="{{route('search')}}" method="GET">
+                                    <form action="{{ route('search') }}" method="GET">
 
                                         <input id="timkiem" type="text" name="search" class="form-control"
-                                        placeholder="Tìm kiếm..." autocomplete="off">
+                                            placeholder="Tìm kiếm..." autocomplete="off">
                                         {{-- <i class="animate-spin hl-spin4 hidden"></i> --}}
-                                        <button class="btn btn-primary" >Tìm kiếm</button>
+                                        <button class="btn btn-primary">Tìm kiếm</button>
                                     </form>
                                 </div>
                             </div>
 
-                            <ul class="list-group" id="result" style="display: none"  {{--ui-autocomplete ajax-results hidden" --}}></ul>
+                            <ul class="list-group" id="result" style="display: none" {{-- ui-autocomplete ajax-results hidden" --}}></ul>
                         </div>
                     </div>
                 </div>
@@ -176,10 +176,15 @@
                                 </li>
                             @endforeach
 
+                                
+                           
+                                
+{{-- 
+                            <li><a title="Phim Lẻ" href="{{ route('movie', $movie->slug) }}">Phim Lẻ</a></li>
 
-                            {{-- <li><a title="Phim Lẻ" href="danhmuc.php">Phim Lẻ</a></li>
-                            <li><a title="Phim Bộ" href="danhmuc.php">Phim Bộ</a></li>
-                            <li><a title="Phim Chiếu Rạp" href="danhmuc.php">Phim Chiếu Rạp</a></li> --}}
+                            <!-- Phim Bộ -->
+                            <li><a title="Phim Bộ" href="{{ route('movie', $movie->slug) }}">Phim Bộ</a></li> --}}
+                
                         </ul>
                     </div>
                     <ul class="nav navbar-nav navbar-left" style="background:#000;">
@@ -241,33 +246,34 @@
 
     <script type="text/javascript">
         $(document).ready(function() {
-                    $('#timkiem').keyup(function() {
-                        $('#result').html('');
-                        var search = $('#timkiem').val();
-                        if (search != '') {
-                            $('#result').css('display', 'inherit')
-                            var expression = new RegExp(search, "i");
-                            $.getJSON('/json/movies.json', function(data) {
-                                $.each(data, function(key, value) {
-                                    if (value.title.search(expression) != -1) {
-                                        $('#result').append(
-                                            '<li style="cursor:pointer " class="list-group-item link-class"><img height="40" width="40"  src="/uploads/movie/'+value.image+'"/>  '+value.title+'<br> |  <span class="text-muted">'+value.description+'</li>');
-                                    }
-                                });
-                            });
-                        } 
-                        else {
-                            $('result').css('display', 'none');
-                        }
+            $('#timkiem').keyup(function() {
+                $('#result').html('');
+                var search = $('#timkiem').val();
+                if (search != '') {
+                    $('#result').css('display', 'inherit')
+                    var expression = new RegExp(search, "i");
+                    $.getJSON('/json/movies.json', function(data) {
+                        $.each(data, function(key, value) {
+                            if (value.title.search(expression) != -1) {
+                                $('#result').append(
+                                    '<li style="cursor:pointer " class="list-group-item link-class"><img height="40" width="40"  src="/uploads/movie/' +
+                                    value.image + '"/>  ' + value.title +
+                                    '<br> |  <span class="text-muted">' + value
+                                    .description + '</li>');
+                            }
+                        });
                     });
-                    $('#result').on('click', 'li', function() {
-                        var click_text = $(this).text().split('|');
-                        $('#timkiem').val($.trim(click_text[0]));
-                        $('#result').html('');
-                        $('#result').css('display', 'none')
-                    });
-                });
-                    
+                } else {
+                    $('result').css('display', 'none');
+                }
+            });
+            $('#result').on('click', 'li', function() {
+                var click_text = $(this).text().split('|');
+                $('#timkiem').val($.trim(click_text[0]));
+                $('#result').html('');
+                $('#result').css('display', 'none')
+            });
+        });
     </script>
 
     <script type="text/javascript">
@@ -310,6 +316,8 @@
 
 
     <style>
+        
+
         #overlay_mb {
             position: fixed;
             display: none;
